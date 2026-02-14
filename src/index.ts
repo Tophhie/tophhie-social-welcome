@@ -38,12 +38,6 @@ export default {
 		const adminPwd = await env.ADMIN_PWD.get();
 
 		for (const repo of repos.repos) {
-			
-			if (repo.did !== "did:plc:ggobmtqnjirtchpwgydxoecb") { // TODO: remove this filter after testing
-				console.log(`Skipping repo ${repo.did} due to filter.`);
-				continue;
-			}
-
 			if (!repo.active) { console.log(`Skipping inactive repo: ${repo.did}`); continue; }
 			try {
 				const accountInfo = await fetchAccountInfo(repo.did, adminPwd);
