@@ -26,6 +26,7 @@ interface Env {
 	WELCOME_KV: KVNamespace;
 	ADMIN_PWD: SecretsStoreSecret;
 	ACS_ACCESS_KEY: SecretsStoreSecret;
+	ZOHO_FLOW_API_KEY: SecretsStoreSecret;
 	ACS_ENDPOINT: string;
 	ACS_SENDER: string;
 }
@@ -45,6 +46,7 @@ export default {
 					console.log(`Already welcomed ${accountInfo.handle} (${accountInfo.did}), skipping.`);
 					continue;
 				}
+				// Send welcome email initially
 				const emailContent = customiseWelcomeEmail(welcomeEmail, accountInfo);
 				try {
 					await sendWelcomeEmail(env, accountInfo.email, emailContent);
@@ -67,6 +69,13 @@ export default {
 						})
 					);
 					continue;
+				}
+				// Notify Zoho Desk to create support contact
+				try {
+					await notifyZohoDesk(env, accountInfo);
+					console.log(`Notified Zoho Desk about new account ${accountInfo.handle} (${accountInfo.did})`);
+				} catch (err) {
+					console.error(`Failed to notify Zoho Desk about ${accountInfo.handle} (${accountInfo.did})`);
 				}
 			} catch (err) {
 				console.error(`Failed to fetch account info for repo ${repo.did}, skipping.`);
@@ -99,6 +108,30 @@ async function fetchAccountInfo(repo: string, adminPwd: string): Promise<Account
 	});
 	if (!accountInfo.ok) throw new Error(`Failed to fetch account info for ${repo}: ${accountInfo.statusText}`);
 	return await accountInfo.json();
+}
+
+async function notifyZohoDesk(env: Env, accountInfo: AccountInfo): Promise<void> {
+	const apiKey = await env.ZOHO_FLOW_API_KEY.get();
+	if (!apiKey) {
+		throw new Error("Zoho Flow API key is not configured");
+	}
+	const flowUrl = "https://flow.zoho.eu/20111363487/flow/webhook/incoming?zapikey=" + apiKey + "&isdebug=false";
+	const payload = {
+		did: accountInfo.did,
+		handle: accountInfo.handle,
+		email: accountInfo.email,
+	}
+	const response = await fetch(flowUrl, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(payload),
+	});
+	if (!response.ok) {
+		const errorText = await response.text();
+		throw new Error(`Failed to notify Zoho Desk: ${response.status} ${response.statusText} - ${errorText}`);
+	}
 }
 
 function hasRepoBeenWelcomed(env: Env, did: string): Promise<boolean> {

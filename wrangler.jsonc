@@ -34,11 +34,16 @@
 			"binding": "ACS_ACCESS_KEY",
 			"store_id": "8040bf8a56dc433abfd936767fd62735",
 			"secret_name": "acs_access_key"
+		},
+		{
+			"binding": "ZOHO_FLOW_API_KEY",
+			"store_id": "8040bf8a56dc433abfd936767fd62735",
+			"secret_name": "zohoflow_new_contact_api_key"
 		}
 	],
 	"vars": {
 		"ACS_ENDPOINT": "https://tophhie-comms.uk.communication.azure.com",
-		"ACS_SENDER": "donotreply@tophhie.social"
+		"ACS_SENDER": "donotreply@tophhie.social",
 	},
 	"placement": {
 		"mode": "smart"
