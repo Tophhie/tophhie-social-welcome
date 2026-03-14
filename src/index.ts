@@ -1,3 +1,4 @@
+import { create } from "node:domain";
 import welcomeEmail from "./templates/welcome.html"
 
 export interface ListReposResponse {
@@ -27,6 +28,7 @@ interface Env {
 	ADMIN_PWD: SecretsStoreSecret;
 	ACS_ACCESS_KEY: SecretsStoreSecret;
 	ZOHO_FLOW_API_KEY: SecretsStoreSecret;
+	HUBSPOT_CONTACT_KEY: SecretsStoreSecret;
 	ACS_ENDPOINT: string;
 	ACS_SENDER: string;
 }
@@ -76,6 +78,13 @@ export default {
 					console.log(`Notified Zoho Desk about new account ${accountInfo.handle} (${accountInfo.did})`);
 				} catch (err) {
 					console.error(`Failed to notify Zoho Desk about ${accountInfo.handle} (${accountInfo.did})`);
+				}
+				// Create Hubspot Contact
+				try {
+					await createHubspotContact(env, accountInfo);
+					console.log(`Created Hubspot Contact for ${accountInfo.did}.`)
+				} catch (err) {
+					console.error(`Failed to create Hubspot Contact for ${accountInfo.did}.`)
 				}
 			} catch (err) {
 				console.error(`Failed to fetch account info for repo ${repo.did}, skipping.`);
@@ -236,4 +245,22 @@ async function hmacSha256Base64(keyBase64: string, message: string) {
     new TextEncoder().encode(message)
   )
   return arrayBufferToBase64(sig)
+}
+
+async function createHubspotContact(env: Env, account: AccountInfo): Promise<boolean> {
+	let apiKey = env.HUBSPOT_CONTACT_KEY.get();
+	let url = "https://api.hubapi.com/crm/v3/objects/contacts";
+	const response = await fetch(url, {
+		method: "POST",
+		headers: {
+		"Content-Type": "application/json",
+		"Authorization": `Bearer ${apiKey}`,
+		},
+		body: JSON.stringify({
+			email: account.email,
+			atprotocol_did: account.did,
+			registered_services: "Tophhie Social"
+		}),
+	});
+	return response.ok;
 }

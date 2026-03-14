@@ -39,6 +39,11 @@
 			"binding": "ZOHO_FLOW_API_KEY",
 			"store_id": "8040bf8a56dc433abfd936767fd62735",
 			"secret_name": "zohoflow_new_contact_api_key"
+		},
+		{
+			"binding": "HUBSPOT_CONTACT_KEY",
+			"store_id": "8040bf8a56dc433abfd936767fd62735",
+			"secret_name": "hubspot_contacts_key"
 		}
 	],
 	"vars": {
