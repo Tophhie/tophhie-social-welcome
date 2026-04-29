@@ -157,6 +157,7 @@ function buildEmailPayload(to: string, content: string) {
 			email: env.ACS_SENDER,
 			name: "Tophhie Social"
 		},
+		replyTo: "help@tophhie.social",
 		subject: "Welcome to Tophhie Social!",
 		html: content,
 	}
