@@ -1,5 +1,6 @@
 import { create } from "node:domain";
 import welcomeEmail from "./templates/welcome.html"
+import { env } from "cloudflare:workers"
 
 export interface ListReposResponse {
 	total: number;
@@ -23,16 +24,6 @@ export interface AccountInfo {
 	emailConfirmedAt: string;
 }
 
-interface Env {
-	WELCOME_KV: KVNamespace;
-	ADMIN_PWD: SecretsStoreSecret;
-	ACS_ACCESS_KEY: SecretsStoreSecret;
-	ZOHO_FLOW_API_KEY: SecretsStoreSecret;
-	HUBSPOT_CONTACT_KEY: SecretsStoreSecret;
-	ACS_ENDPOINT: string;
-	ACS_SENDER: string;
-}
-
 export default {
 	// The scheduled handler is invoked at the interval set in our wrangler.jsonc's
 	// [[triggers]] configuration.
@@ -44,14 +35,14 @@ export default {
 			if (!repo.active) { console.log(`Skipping inactive repo: ${repo.did}`); continue; }
 			try {
 				const accountInfo = await fetchAccountInfo(repo.did, adminPwd);
-				if (await hasRepoBeenWelcomed(env, accountInfo.did)) {
+				if (await hasRepoBeenWelcomed(accountInfo.did)) {
 					console.log(`Already welcomed ${accountInfo.handle} (${accountInfo.did}), skipping.`);
 					continue;
 				}
 				// Send welcome email initially
 				const emailContent = customiseWelcomeEmail(welcomeEmail, accountInfo);
 				try {
-					await sendWelcomeEmail(env, accountInfo.email, emailContent);
+					await sendWelcomeEmail(accountInfo.email, emailContent);
 					await env.WELCOME_KV.put(
 						repo.did,
 						JSON.stringify({
@@ -74,14 +65,14 @@ export default {
 				}
 				// Notify Zoho Desk to create support contact
 				try {
-					await notifyZohoDesk(env, accountInfo);
+					await notifyZohoDesk(accountInfo);
 					console.log(`Notified Zoho Desk about new account ${accountInfo.handle} (${accountInfo.did})`);
 				} catch (err) {
 					console.error(`Failed to notify Zoho Desk about ${accountInfo.handle} (${accountInfo.did})`);
 				}
 				// Create Hubspot Contact
 				try {
-					await createHubspotContact(env, accountInfo);
+					await createHubspotContact(accountInfo);
 					console.log(`Created Hubspot Contact for ${accountInfo.did}.`)
 				} catch (err) {
 					console.error(`Failed to create Hubspot Contact for ${accountInfo.did}.`)
@@ -119,7 +110,7 @@ async function fetchAccountInfo(repo: string, adminPwd: string): Promise<Account
 	return await accountInfo.json();
 }
 
-async function notifyZohoDesk(env: Env, accountInfo: AccountInfo): Promise<void> {
+async function notifyZohoDesk(accountInfo: AccountInfo): Promise<void> {
 	const apiKey = await env.ZOHO_FLOW_API_KEY.get();
 	if (!apiKey) {
 		throw new Error("Zoho Flow API key is not configured");
@@ -143,7 +134,7 @@ async function notifyZohoDesk(env: Env, accountInfo: AccountInfo): Promise<void>
 	}
 }
 
-function hasRepoBeenWelcomed(env: Env, did: string): Promise<boolean> {
+function hasRepoBeenWelcomed(did: string): Promise<boolean> {
 	return env.WELCOME_KV.get(did).then((value) => value !== null);
 }
 
@@ -153,101 +144,22 @@ function customiseWelcomeEmail(template: string, accountInfo: AccountInfo): stri
 		.replace(/{{ACCOUNT_DID}}/g, accountInfo.did);
 }
 
-async function sendWelcomeEmail(env: Env, to: string, content: string): Promise<void> {
-  const apiVersion = "2025-09-01";
-  const endpoint = env.ACS_ENDPOINT.replace(/\/$/, ""); // avoid accidental double slashes
-  const url = `${endpoint}/emails:send?api-version=${apiVersion}`;
-
-  const emailPayload = buildEmailPayload(env, to, content);
-  const emailBody = JSON.stringify(emailPayload);
-
-  const urlObj = new URL(url);
-  const host = urlObj.host;
-  const pathAndQuery = urlObj.pathname + urlObj.search;
-
-  const timestamp = new Date().toUTCString();
-
-  const contentHash = await sha256Base64(emailBody);
-
-  const stringToSign = `POST\n${pathAndQuery}\n${timestamp};${host};${contentHash}`;
-
-  const signature = await hmacSha256Base64(await env.ACS_ACCESS_KEY.get(), stringToSign);
-
-  const authHeader = `HMAC-SHA256 SignedHeaders=x-ms-date;host;x-ms-content-sha256&Signature=${signature}`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Host": host,
-      "x-ms-date": timestamp,
-      "x-ms-content-sha256": contentHash,
-      "Authorization": authHeader,
-    },
-    body: emailBody,
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to send email: ${response.status} ${response.statusText} - ${errorText}`);
-  }
+async function sendWelcomeEmail(to: string, content: string): Promise<void> {
+	const emailJson = buildEmailPayload(to, content);
+	const response = await env.EMAIL.send(emailJson);
+	console.log(`Email sent: ${response.messageId}`);
 }
 
-function buildEmailPayload(env: Env, to: string, content: string) {
+function buildEmailPayload(to: string, content: string) {
 	return {
-		senderAddress: env.ACS_SENDER,
-		recipients: {
-			to: [{address: to}],
-		},
-		content: {
-			subject: 'Welcome to Tophhie Social!',
-			html: content,
-		},
-		replyTo: [
-			{address: "help@tophhie.social"}
-		]
+		to: to,
+		from: env.ACS_SENDER,
+		subject: "Welcome to Tophhie Social!",
+		html: content,
 	}
 }
 
-function base64ToArrayBuffer(base64: string) {
-  const binary = atob(base64)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i)
-  }
-  return bytes.buffer
-}
-
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-  const bytes = new Uint8Array(buffer)
-  let binary = ''
-  for (const b of bytes) binary += String.fromCharCode(b)
-  return btoa(binary)
-}
-
-async function sha256Base64(message: string) {
-  const data = new TextEncoder().encode(message)
-  const hash = await crypto.subtle.digest('SHA-256', data)
-  return arrayBufferToBase64(hash)
-}
-
-async function hmacSha256Base64(keyBase64: string, message: string) {
-  const key = await crypto.subtle.importKey(
-    'raw',
-    base64ToArrayBuffer(keyBase64),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign']
-  )
-  const sig = await crypto.subtle.sign(
-    'HMAC',
-    key,
-    new TextEncoder().encode(message)
-  )
-  return arrayBufferToBase64(sig)
-}
-
-async function createHubspotContact(env: Env, account: AccountInfo): Promise<boolean> {
+async function createHubspotContact(account: AccountInfo): Promise<boolean> {
 	let apiKey = env.HUBSPOT_CONTACT_KEY.get();
 	let url = "https://api.hubapi.com/crm/v3/objects/contacts";
 	const response = await fetch(url, {
