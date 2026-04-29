@@ -153,7 +153,10 @@ async function sendWelcomeEmail(to: string, content: string): Promise<void> {
 function buildEmailPayload(to: string, content: string) {
 	return {
 		to: to,
-		from: env.ACS_SENDER,
+		from: {
+			email: env.ACS_SENDER,
+			name: "Tophhie Social"
+		},
 		subject: "Welcome to Tophhie Social!",
 		html: content,
 	}
