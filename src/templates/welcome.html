@@ -1,35 +1,68 @@
-<table style="width: 100%; max-width: 600px; border-collapse: collapse; margin-left: auto; margin-right: auto;">
-<tbody>
-<tr style="height: 62px;">
-<td style="padding: 0cm 5.4pt; height: 62px;">
-<p><img style="max-width: 100%;" src="https://blob.tophhie.co.uk/tophhiecloud-resources/Logos/tophhiecloud-colour.png" width="157" data-outlook-trace="F:1|T:1" /></p>
-</td>
-</tr>
-<tr style="height: 50px;">
-<td style="padding: 0pt 5.75pt;" width="100%">
-<h2 style="text-align: left; margin: 0;" align="center">Welcome to Tophhie Social!</h2>
-</td>
-</tr>
-<tr style="height: 52.3906px;">
-<td style="padding: 0pt 5.75pt; height: 52.3906px;" valign="top">
-<p style="line-height: 15.0pt;">Hi {{ACCOUNT_HANDLE}} ({{ACCOUNT_DID}}),</p>
-<p style="line-height: 15.0pt;">We're so happy to have you with us at Tophhie Social. We'll take good care of your atproto account, and your data.</p>
-<p style="line-height: 15.0pt;">In case you need them, you can find our policies and terms here.</p>
-<ul>
-<li style="line-height: 15.0pt;"><a href="https://blog.tophhie.cloud/atproto-privacy-policy/">Privacy Policy</a></li>
-<li style="line-height: 15.0pt;"><a href="https://blog.tophhie.cloud/atproto-tos/">Terms of Service</a></li>
-<li style="line-height: 15.0pt;"><a href="https://blog.tophhie.cloud/atproto-account-inactivity-policy">Account Inactivity & Deletion Policy</a></li>
-</ul>
-<p>As part of our service, you'll also be a part of our homepage, accessibility scoring, and other features we're working on! You can opt out of these at any time by heading to <a href="https://profile.tophhie.social">profile.tophhie.social</a>.</p>
-<p>Tophhie Social always intends to be a free service, however we do have operational costs and are always open to donations! If you can spare anything for our project, it would be greatly appreciated. You can make donations <a href="https://aka.tophhie.cloud/tsdonate">here</a>.</p>
-<p>Once again, thank you for being a part of Tophhie Social. If you need anything, just email us at <a href="mailto:help@tophhie.cloud">help@tophhie.cloud</a>, visit <a href="https://support.tophhie.cloud">support.tophhie.cloud</a>, or message @tophhie.cloud or @tophhie.social on Bluesky.</p>
-<p style="line-height: 15.0pt;">Kind regards,<br />Tophhie Social</p>
-</td>
-</tr>
-<tr style="height: 55px;">
-<td style="background: #f2f2f2; padding: 0cm 5.75pt; height: 55px;">
-<p style="font-size: 11px;">Please do not reply to this message. <br /> If you need immediate help, please email <a href="mailto:help@tophhie.cloud">help@tophhie.cloud</a>.</p>
-</td>
-</tr>
-</tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tophhie Cloud</title>
+<style>
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  body{margin:0;padding:0;background:#f0f0f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
+  .email-card{max-width:520px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+  .email-header{background:linear-gradient(160deg,#100235 0%,#16063F 60%,#1C0A52 100%);padding:32px 40px 28px;text-align:center}
+  .logo-text{font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.3px}
+  .logo-dot{color:#E8005A}
+  .icon-badge{width:64px;height:64px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;}
+  .badge-pink{background:rgba(232,0,90,0.15);border:2px solid rgba(232,0,90,0.35)}
+  .badge-amber{background:rgba(245,158,11,0.15);border:2px solid rgba(245,158,11,0.3)}
+  .badge-purple{background:rgba(139,0,96,0.20);border:2px solid rgba(139,0,96,0.35)}
+  .badge-green{background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.3)}
+  .email-body{padding:36px 40px 28px}
+  .email-title{font-size:22px;font-weight:700;color:#111118;margin:0 0 12px;letter-spacing:-0.3px}
+  .email-text{font-size:15px;color:#555566;line-height:1.6;margin:0 0 20px}
+  .btn{display:inline-block;padding:14px 32px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;letter-spacing:-0.1px}
+  .btn-pink{background:linear-gradient(135deg,#E8005A,#B3004A);color:#fff}
+  .btn-amber{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+  .btn-purple{background:linear-gradient(135deg,#8B0060,#C4004E);color:#fff}
+  .btn-green{background:linear-gradient(135deg,#22C55E,#16a34a);color:#fff}
+  .btn-wrap{text-align:center;margin:28px 0}
+  .code-block{background:#f4f4f8;border:1px solid #e0e0ea;border-radius:10px;padding:20px;text-align:center;margin:24px 0}
+  .code-label{font-size:11px;font-weight:600;color:#9999aa;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+  .code-value{font-size:32px;font-weight:800;color:#111118;letter-spacing:6px}
+  .code-expiry{font-size:12px;color:#aaaabc;margin-top:8px}
+  .url-block{background:#f8f8fc;border:1px solid #e4e4f0;border-radius:8px;padding:12px 16px;margin:16px 0;word-break:break-all}
+  .url-text{font-size:12px;color:#7777aa;font-family:'Courier New',monospace}
+  .info-list{background:#f8f8fc;border-radius:10px;padding:18px 20px;margin:20px 0}
+  .info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #ebebf5}
+  .info-row:last-child{border-bottom:none}
+  .info-key{color:#8888aa;font-weight:500}
+  .info-val{color:#222233;font-weight:600}
+  .warning-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:14px 16px;margin:20px 0}
+  .warning-text{font-size:13px;color:#92400e;line-height:1.5}
+  .security-notice{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin:20px 0}
+  .security-notice p{font-size:13px;color:#166534;line-height:1.5}
+  .divider{height:1px;background:#ebebf5;margin:24px 0}
+  .email-footer{background:#f8f8fc;padding:20px 40px;border-top:1px solid #ebebf5;text-align:center}
+  .footer-brand{font-size:12px;color:#8888aa;font-weight:600;margin-bottom:6px}
+  .footer-text{font-size:12px;color:#aaaabc;line-height:1.6}
+  .footer-text a{color:#E8005A;text-decoration:none}
+  @media(max-width:600px){.email-body,.email-header,.email-footer{padding-left:20px;padding-right:20px}}
+</style>
+</head>
+<body>
+<div class="email-card">
+    
+    <div class="email-header" style="display:flex;align-items:center;justify-content:space-between">
+      <img src="https://public-blob.tophhie.cloud/logos/tc-colourlogo-whitetext.png" width="170">
+      <div class="icon-badge badge-green" style="display:inline-flex"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+    </div>
+    <div class="email-body">
+      <h1 class="email-title">Welcome to Tophhie Social 🎉</h1>
+      <p class="email-text">Hi {{ACCOUNT_HANDLE}} ({{ACCOUNT_DID}}),</p><p class="email-text">We're so happy to have you with us at Tophhie Social. We'll take good care of your atproto account, and your data.</p><p class="email-text">In case you need them, you can find our policies and terms in the <a href="https://trust.tophhie.cloud">Tophhie Cloud Trust Center</a>.</p><p class="email-text">As part of our service, you'll also be a part of our homepage, accessibility scoring, and other features we're working on! You can opt out of these at any time by heading to <a href="https://profile.tophhie.social">profile.tophhie.social</a>.</p><p class="email-text">Tophhie Social always intends to be a free service, however we do have operational costs and are always open to donations! If you can spare anything for our project, it would be greatly appreciated. You can make donations <a href="https://aka.tophhie.cloud/tsdonate">here</a>.</p><p class="email-text">Once again, thank you for being a part of Tophhie Social. If you need anything, just email us at <a href="mailto:help@tophhie.cloud">help@tophhie.cloud</a>, visit <a href="https://support.tophhie.cloud">support.tophhie.cloud</a>, or message @tophhie.cloud or @tophhie.social on Bluesky.</p><p class="email-text">Kind regards,<br>Tophhie Social</p>
+    </div>
+    
+    <div class="email-footer">
+      <p class="footer-brand">Tophhie Cloud</p>
+      <p class="footer-text">© 2026 Tophhie Cloud &middot; <a href="https://trust.tophhie.cloud">Privacy Policy</a> &middot; <a href="https://tophhie.cloud">tophhie.cloud</a></p>
+    </div></div>
+</body>
+</html>
