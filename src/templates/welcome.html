@@ -8,7 +8,7 @@
   body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
   body{margin:0;padding:0;background:#f0f0f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
   .email-card{max-width:520px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
-  .email-header{background:linear-gradient(160deg,#100235 0%,#16063F 60%,#1C0A52 100%);padding:32px 40px 28px;text-align:center}
+  .email-header{padding:0}
   .logo-text{font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.3px}
   .logo-dot{color:#E8005A}
   .icon-badge{width:64px;height:64px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;}
@@ -51,10 +51,18 @@
 <body>
 <div class="email-card">
     
-    <div class="email-header" style="display:flex;align-items:center;justify-content:space-between">
-      <img src="https://public-blob.tophhie.cloud/logos/tc-colourlogo-whitetext.png" width="170">
-      <div class="icon-badge badge-green" style="display:inline-flex"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-    </div>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="email-header" style="background:#100235">
+      <tr>
+        <td style="padding:28px 40px 24px" valign="middle">
+          <img src="https://public-blob.tophhie.cloud/logos/tc-colourlogo-whitetext.png" width="170" height="auto" alt="Tophhie Cloud" style="display:block;border:0">
+        </td>
+        <td align="right" style="padding:28px 40px 24px" valign="middle">
+          <div class="icon-badge badge-green" style="width:64px;height:64px;border-radius:50%;display:table;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.3)">
+            <div style="display:table-cell;vertical-align:middle;text-align:center;font-size:28px;line-height:1">✅</div>
+          </div>
+        </td>
+      </tr>
+    </table>
     <div class="email-body">
       <h1 class="email-title">Welcome to Tophhie Social 🎉</h1>
       <p class="email-text">Hi {{ACCOUNT_HANDLE}} ({{ACCOUNT_DID}}),</p><p class="email-text">We're so happy to have you with us at Tophhie Social. We'll take good care of your atproto account, and your data.</p><p class="email-text">In case you need them, you can find our policies and terms in the <a href="https://trust.tophhie.cloud">Tophhie Cloud Trust Center</a>.</p><p class="email-text">As part of our service, you'll also be a part of our homepage, accessibility scoring, and other features we're working on! You can opt out of these at any time by heading to <a href="https://profile.tophhie.social">profile.tophhie.social</a>.</p><p class="email-text">Tophhie Social always intends to be a free service, however we do have operational costs and are always open to donations! If you can spare anything for our project, it would be greatly appreciated. You can make donations <a href="https://aka.tophhie.cloud/tsdonate">here</a>.</p><p class="email-text">Once again, thank you for being a part of Tophhie Social. If you need anything, just email us at <a href="mailto:help@tophhie.cloud">help@tophhie.cloud</a>, visit <a href="https://support.tophhie.cloud">support.tophhie.cloud</a>, or message @tophhie.cloud or @tophhie.social on Bluesky.</p><p class="email-text">Kind regards,<br>Tophhie Social</p>
